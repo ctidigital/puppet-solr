@@ -103,6 +103,7 @@ define solr::core(
       }
     }
     exec { 'create-solr5-cores':
+      path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command => "curl 'http://localhost:8983/solr/admin/cores?action=CREATE&name=${core_name}&instanceDir=${core_name}'",
       creates => "/var/lib/solr/data/${core_name}/core.properties",
       require => File["/var/lib/solr/data/${core_name}/conf"],

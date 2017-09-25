@@ -37,6 +37,7 @@ class solr::install {
 
       'xenial': {
         exec { 'Add_OpenJDK7_Repo':
+          path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
           command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
           creates => '/etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-xenial.list',
         }
@@ -66,6 +67,7 @@ class solr::install {
     }
   } else {
     exec { 'install-java8-for-solr':
+      path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command => 'add-apt-repository -y ppa:webupd8team/java;\
 apt-get -y update;\
 echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true |\

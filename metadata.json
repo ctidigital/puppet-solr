@@ -1,6 +1,6 @@
 {
   "name": "vamsee-solr",
-  "version": "0.0.8",
+  "version": "0.0.8a",
   "author": "vamsee",
   "summary": "A puppet module for solr",
   "license": "MIT",
