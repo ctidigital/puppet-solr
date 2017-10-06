@@ -71,6 +71,7 @@ LOGDIR="/var/log/$NAME"
 START_JAR="$JETTY_HOME/start.jar"
 DEFAULT=/etc/default/$NAME
 JVM_TMP=/var/cache/$NAME/tmp
+START_DELAY=10
 
 if [ `id -u` -ne 0 ]; then
 	echo "You need root privileges to run this script"
@@ -316,7 +317,7 @@ case "$1" in
 		    --chdir "$JETTY_HOME" --background --make-pidfile -x /bin/bash -- -c \
 		    "$AUTHBIND_COMMAND $JETTY_CMD"
 
-		sleep 10
+		sleep $START_DELAY
 		if start-stop-daemon --test --start --pidfile "$PIDFILE" \
 			--user $JETTY_USER --exec "$JAVA" >/dev/null; then
 			log_end_msg 1
