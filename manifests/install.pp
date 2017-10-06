@@ -71,6 +71,7 @@ class solr::install {
           replace => yes,
           source  => 'puppet:///modules/solr/jetty8',
           require => Package['jetty8'],
+        }
       }
       default: { }
     }
