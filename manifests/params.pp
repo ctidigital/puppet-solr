@@ -9,7 +9,7 @@ class solr::params {
 
   $solr_home     = '/usr/share/solr'
   $solr_version  = '4.7.2'
-  $mirror_site   = 'http://www.us.apache.org/dist/lucene/solr'
+  $mirror_site   = 'http://archive.apache.org/dist/lucene/solr'
   $data_dir      = '/var/lib/solr'
   $cores         = ['default']
   $dist_root     = '/tmp'
