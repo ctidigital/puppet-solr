@@ -25,7 +25,7 @@ JETTY_PORT=8983
 #JETTY_ARGS=
 
 # Extra options to pass to the JVM         
-JAVA_OPTIONS="-Xmx<%= @heap_size -%> -Dsolr.solr.home=/usr/share/solr -Dsolr.data.dir=/var/lib/solr -Djava.awt.headless=true -Djava.library.path=/usr/lib"
+JAVA_OPTIONS="$JAVA_OPTIONS -Dsolr.solr.home=/usr/share/solr -Dsolr.data.dir=/var/lib/solr -Xmx<%= @heap_size -%>"
 
 # Home of Java installation.
 # JAVA_HOME=
