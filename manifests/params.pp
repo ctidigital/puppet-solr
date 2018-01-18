@@ -13,6 +13,7 @@ class solr::params {
   $data_dir      = '/var/lib/solr'
   $cores         = ['default']
   $dist_root     = '/tmp'
+  $heap_size     = "256m"
 
   case $::lsbdistcodename {
     'precise': {
