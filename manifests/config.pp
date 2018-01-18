@@ -21,6 +21,7 @@ class solr::config(
   $dist_root      = $solr::params::dist_root,
   $jetty_package  = $solr::params::jetty_package,
   $jdk_dirs       = $solr::params::jdk_dirs,
+  $heap_size      = $solr::params::heap_size,
   ) inherits solr::params {
 
   if versioncmp($::solr::version, '4.1') < 0 {
