@@ -106,8 +106,8 @@ define solr::core(
 
     # Add solr user to web group so it can access core config
     exec { 'Add-solr-to-web-group':
-      unless  => '/bin/grep -q "${web_group}\\S*solr" /etc/group',
-      command => '/sbin/usermod -aG ${web_group} solr',
+      unless  => "/usr/bin/getent group ${web_group} | egrep -q solr",
+      command => "/usr/sbin/usermod -aG ${web_group} solr; /etc/init.d/solr restart",
       require => Exec['install-solr'],
     }
 
