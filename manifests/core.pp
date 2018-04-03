@@ -18,6 +18,7 @@ define solr::core(
   $core_name = $title,
   $config_source = 'puppet:///modules/solr/conf',
   $config_type = 'directory',
+  $web_group = 'www-data',
 ) {
   include solr::params
 
@@ -102,11 +103,19 @@ define solr::core(
         fail('Unsupported value for parameter config_type')
       }
     }
+
+    # Add solr user to web group so it can access core config
+    exec { 'Add-solr-to-web-group':
+      unless  => '/bin/grep -q "${web_group}\\S*solr" /etc/group',
+      command => '/sbin/usermod -aG ${web_group} solr',
+      require => Exec['install-solr'],
+    }
+
     exec { 'create-solr5-cores':
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command => "curl 'http://localhost:8983/solr/admin/cores?action=CREATE&name=${core_name}&instanceDir=${core_name}'",
       creates => "/var/lib/solr/data/${core_name}/core.properties",
-      require => File["/var/lib/solr/data/${core_name}/conf"],
+      require => [File["/var/lib/solr/data/${core_name}/conf"],Exec['Add-solr-to-web-group']],
     }
   }
 }
