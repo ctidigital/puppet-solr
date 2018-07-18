@@ -36,30 +36,36 @@ class solr::install {
       }
 
       'xenial': {
-        exec { 'Add_OpenJDK7_Repo':
+        exec { 'Add_OpenJDK_Repo':
           path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
           command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
           creates => '/etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-xenial.list',
         }
 
-        if ! defined(Package['openjdk-7-jre-headless']) {
-          package { 'openjdk-7-jre-headless':
+        if versioncmp($::solr::version, '4.0') >= 0 {
+          $java_package="openjdk-8-jdk-headless"
+        } else {
+          $java_package="openjdk-7-jre-headless"
+        }
+
+        if ! defined(Package["${java_package}"]) {
+          package { $java_package:
             ensure  => present,
-            require => Exec['Add_OpenJDK7_Repo'],
+            require => Exec['Add_OpenJDK_Repo'],
           }
         }
 
         if ! defined(Package['jetty8']) {
           package { 'jetty8':
             ensure  => present,
-            require => Package['openjdk-7-jre-headless'],
+            require => Package["${java_package}"],
           }
         }
 
         if ! defined(Package['libjetty8-extra-java']) {
           package { 'libjetty8-extra-java':
             ensure  => present,
-            require => Package['openjdk-7-jre-headless'],
+            require => Package["${java_package}"],
           }
         }
 

@@ -88,14 +88,14 @@ class solr::config(
     }
 
     # have to copy logging jars separately from solr 4.3 onwards
-    exec { 'copy-solr':
-      path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
-      command =>  "jar xvf ${dist_root}/${solr_name}/dist/${solr_name}.war",
-      cwd     =>  $solr_home,
-      onlyif  =>  "test ! -d ${solr_home}/WEB-INF",
-      require =>  Exec['extract-solr'],
-    }
     if versioncmp($::solr::version, '4.3') >= 0 {
+      exec { 'copy-solr':
+        path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
+        command =>  "jar xvf ${dist_root}/${solr_name}/dist/${solr_name}.war",
+        cwd     =>  $solr_home,
+        onlyif  =>  "test ! -d ${solr_home}/WEB-INF",
+        require =>  Exec['extract-solr'],
+      }
       exec { 'copy-solr-extra':
         path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
         command =>  "cp ${dist_root}/${solr_name}/example/lib/ext/*.jar WEB-INF/lib",
@@ -104,6 +104,7 @@ class solr::config(
         require =>  Exec['extract-solr'],
       }
     }
+
     if versioncmp($::solr::version, '3.6.2') == 0 {
       exec { 'download-jsp':
         path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
