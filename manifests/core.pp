@@ -49,6 +49,7 @@ define solr::core(
         # Link the config directory
         file {"${solr_home}/${core_name}/conf":
           ensure  => 'link',
+          force   => true,
           owner   => 'jetty',
           group   => 'jetty',
           target  => $config_source,
@@ -93,6 +94,7 @@ define solr::core(
         # Link the config directory
         file {"/var/lib/solr/data/${core_name}/conf":
           ensure  => 'link',
+          force   => true,
           owner   => 'solr',
           group   => 'solr',
           target  => $config_source,
