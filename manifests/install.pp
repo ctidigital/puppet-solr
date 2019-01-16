@@ -74,28 +74,31 @@ class solr::install {
         }
       }
 
-      if ! defined(Package['jetty8']) {
-        package { 'jetty8':
-          ensure  => present,
-          require => Package["${java_package}"],
-        }
-      }
+      if versioncmp($::solr::version, '5.0') < 0 {
 
-      if ! defined(Package['libjetty8-extra-java']) {
-        package { 'libjetty8-extra-java':
-          ensure  => present,
-          require => Package["${java_package}"],
+        if ! defined(Package['jetty8']) {
+          package { 'jetty8':
+            ensure  => present,
+            require => Package["${java_package}"],
+          }
         }
-      }
 
-      file { '/etc/init.d/jetty8':
-        ensure  => present,
-        group   => root,
-        owner   => root,
-        mode    => '0755',
-        replace => yes,
-        source  => 'puppet:///modules/solr/jetty8',
-        require => Package['jetty8'],
+        if ! defined(Package['libjetty8-extra-java']) {
+          package { 'libjetty8-extra-java':
+            ensure  => present,
+            require => Package["${java_package}"],
+          }
+        }
+
+        file { '/etc/init.d/jetty8':
+          ensure  => present,
+          group   => root,
+          owner   => root,
+          mode    => '0755',
+          replace => yes,
+          source  => 'puppet:///modules/solr/jetty8',
+          require => Package['jetty8'],
+        }
       }
     }
 
