@@ -10,6 +10,26 @@ class solr::install {
 
   ensure_packages(['python-software-properties', 'software-properties-common'])
 
+  if ! defined(Package['oracle-java8-set-default']) {
+    package { 'oracle-java8-set-default':
+      ensure => purged,
+      before => Exec['Remove_Oracle_Java_PPA'],
+    }
+  }
+
+  if ! defined(Package['oracle-java8-installer']) {
+    package { 'oracle-java8-installer':
+      ensure => purged,
+      before => Exec['Remove_Oracle_Java_PPA'],
+    }
+  }
+
+  exec { 'Remove_Oracle_Java_PPA':
+    path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
+    command => 'add-apt-repository -y --remove ppa:webupd8team/java; apt-get -y update',
+    onlyif  => "test -s /etc/apt/sources.list.d/webupd8team-ubuntu-java-$::lsbdistcodename.list",
+  }
+
   case $::lsbdistcodename {
 
     'trusty': {
