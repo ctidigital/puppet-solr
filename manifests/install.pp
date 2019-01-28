@@ -8,7 +8,7 @@
 
 class solr::install {
 
-  ensure_packages(['python-software-properties', 'software-properties-common'])
+  ensure_packages(['software-properties-common'])
 
   if ! defined(Package['oracle-java8-set-default']) {
     package { 'oracle-java8-set-default':
