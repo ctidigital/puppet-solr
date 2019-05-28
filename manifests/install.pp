@@ -27,82 +27,99 @@ class solr::install {
   exec { 'Remove_Oracle_Java_PPA':
     path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
     command => 'add-apt-repository -y --remove ppa:webupd8team/java; apt-get -y update',
-    onlyif  => "test -s /etc/apt/sources.list.d/webupd8team-ubuntu-java-$::lsbdistcodename.list",
+    onlyif  => "test -s /etc/apt/sources.list.d/webupd8team-ubuntu-java-${::lsbdistcodename}.list",
   }
 
-  case $::lsbdistcodename {
 
-    'trusty': {
-      if ! defined(Package['default-jdk']) {
-        package { 'default-jdk':
-        ensure    => present,
-        }
-      }
-
-      if ! defined(Package['jetty']) {
-        package { 'jetty':
-          ensure  => present,
-          require => Package['default-jdk'],
-        }
-      }
-
-      if ! defined(Package['libjetty-extra']) {
-        package { 'libjetty-extra':
-          ensure  => present,
-          require => Package['jetty'],
-        }
+  if versioncmp($facts['os']['release']['full'], '14') == 0 {
+    if ! defined(Package['default-jdk']) {
+      package { 'default-jdk':
+      ensure    => present,
       }
     }
 
-    'xenial': {
-      exec { 'Add_OpenJDK_Repo':
-        path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
-        command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
-        creates => '/etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-xenial.list',
-      }
-
-      if versioncmp($::solr::version, '4.0') >= 0 {
-        $java_package="openjdk-8-jdk-headless"
-      } else {
-        $java_package="openjdk-7-jre-headless"
-      }
-
-      if ! defined(Package["${java_package}"]) {
-        package { $java_package:
-          ensure  => present,
-          require => Exec['Add_OpenJDK_Repo'],
-        }
-      }
-
-      if versioncmp($::solr::version, '5.0') < 0 {
-
-        if ! defined(Package['jetty8']) {
-          package { 'jetty8':
-            ensure  => present,
-            require => Package["${java_package}"],
-          }
-        }
-
-        if ! defined(Package['libjetty8-extra-java']) {
-          package { 'libjetty8-extra-java':
-            ensure  => present,
-            require => Package["${java_package}"],
-          }
-        }
-
-        file { '/etc/init.d/jetty8':
-          ensure  => present,
-          group   => root,
-          owner   => root,
-          mode    => '0755',
-          replace => yes,
-          source  => 'puppet:///modules/solr/jetty8',
-          require => Package['jetty8'],
-        }
+    if ! defined(Package['jetty']) {
+      package { 'jetty':
+        ensure  => present,
+        require => Package['default-jdk'],
       }
     }
 
-    default: { }
+    if ! defined(Package['libjetty-extra']) {
+      package { 'libjetty-extra':
+        ensure  => present,
+        require => Package['jetty'],
+      }
+    }
+  }
+
+  if versioncmp($facts['os']['release']['full'], '16') == 0 {
+    exec { 'Add_OpenJDK_Repo':
+      path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
+      command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
+      creates => "/etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-${::lsbdistcodename}.list",
+    }
+
+    if versioncmp($::solr::version, '4.0') >= 0 {
+      $java_package='openjdk-8-jdk-headless'
+    } else {
+      $java_package='openjdk-7-jre-headless'
+    }
+
+    if ! defined(Package[$java_package]) {
+      package { $java_package:
+        ensure  => present,
+        require => Exec['Add_OpenJDK_Repo'],
+      }
+    }
+
+    if versioncmp($::solr::version, '5.0') < 0 {
+
+      if ! defined(Package['jetty8']) {
+        package { 'jetty8':
+          ensure  => present,
+          require => Package[$java_package],
+        }
+      }
+
+      if ! defined(Package['libjetty8-extra-java']) {
+        package { 'libjetty8-extra-java':
+          ensure  => present,
+          require => Package[$java_package],
+        }
+      }
+
+      file { '/etc/init.d/jetty8':
+        ensure  => present,
+        group   => root,
+        owner   => root,
+        mode    => '0755',
+        replace => yes,
+        source  => 'puppet:///modules/solr/jetty8',
+        require => Package['jetty8'],
+      }
+    }
+  }
+
+  if versioncmp($facts['os']['release']['full'], '18') >= 0 {
+    exec { 'Add_OpenJDK_Repo':
+      path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
+      command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
+      creates => "/etc/apt/sources.list.d/openjdk-r-ubuntu-ppa-${::lsbdistcodename}.list",
+    }
+
+    if versioncmp($::solr::version, '4.0') >= 0 {
+      $java_package='openjdk-8-jdk-headless'
+    } else {
+      $java_package='openjdk-7-jre-headless'
+    }
+
+    if ! defined(Package[$java_package]) {
+      package { $java_package:
+        ensure  => present,
+        require => Exec['Add_OpenJDK_Repo'],
+      }
+    }
   }
 
   if ! defined(Package['wget']) {

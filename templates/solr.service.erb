@@ -1,0 +1,15 @@
+[Unit]
+Description=SOLR Service
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+WorkingDirectory=/opt/solr-<%= @version %>
+PIDFile=/run/solr.pid
+ExecStart=/usr/bin/java -jar start.jar -Xmx<%= @heap_size %>
+User=solr
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
