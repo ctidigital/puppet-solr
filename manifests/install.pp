@@ -31,7 +31,8 @@ class solr::install {
   }
 
 
-  if versioncmp($facts['os']['release']['full'], '14') == 0 {
+  if (versioncmp($facts['os']['release']['full'], '14') >= 0
+  and versioncmp($facts['os']['release']['full'], '16') < 0) {
     if ! defined(Package['default-jdk']) {
       package { 'default-jdk':
       ensure    => present,
@@ -53,7 +54,8 @@ class solr::install {
     }
   }
 
-  if versioncmp($facts['os']['release']['full'], '16') == 0 {
+  if (versioncmp($facts['os']['release']['full'], '16') >= 0
+  and versioncmp($facts['os']['release']['full'], '18') < 0) {
     exec { 'Add_OpenJDK_Repo':
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command => 'add-apt-repository -y ppa:openjdk-r/ppa; apt-get -y update',
