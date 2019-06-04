@@ -229,9 +229,10 @@ class solr::config(
 
     exec { 'install-solr':
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin', "${dist_root}/${solr_name}/bin" ],
-      command =>  "cd ${dist_root}/${solr_name}; install_solr_service.sh ${dist_root}/${dl_name} -d ${::solr::params::data_dir}",
+      cwd     => "${dist_root}/${solr_name}",
+      command =>  "install_solr_service.sh ${dist_root}/${dl_name} -d ${::solr::params::data_dir}",
       onlyif  =>  "test ! -d /opt/${solr_name} && test -d ${dist_root}/${solr_name}",
-      require =>  [Exec['extract-solr'],Exec['solr-download']],
+      require =>  Exec['extract-solr'],
     }
 
     exec { 'Add-solr-to-web-group':
