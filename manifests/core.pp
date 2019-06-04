@@ -135,8 +135,8 @@ define solr::core(
         require => File["${solr_home}/${core_name}/conf"],
       }
     }
-  } elsif versioncmp($::solr::version, '7.0') < 0 {
-    ## SOLR 5 and 6 core install section
+  } elsif versioncmp($::solr::version, '8.0') < 0 {
+    ## SOLR 5-7 core install section
     file { "/var/lib/solr/data/${core_name}":
       ensure => directory,
       mode   => '2770',
