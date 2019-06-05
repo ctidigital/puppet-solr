@@ -215,7 +215,7 @@ class solr::config(
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command =>  "wget ${download_url}",
       cwd     =>  $dist_root,
-      onlyif  =>  "test ! -d /opt/${solr_name} && test ! -f ${dist_root}/${dl_name}",
+      unless  => "test -d /opt/${solr_name}",
       timeout =>  0,
     }
 
@@ -223,7 +223,8 @@ class solr::config(
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command =>  "tar xvf ${dl_name}",
       cwd     =>  $dist_root,
-      onlyif  =>  "test ! -d /opt/${solr_name} && test -f ${dist_root}/${dl_name}",
+      creates => "${dist_root}/${dl_name}",
+      unless  =>  "test -d /opt/${solr_name}",
       require =>  Exec['solr-download'],
     }
 
@@ -231,7 +232,7 @@ class solr::config(
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin', "${dist_root}/${solr_name}/bin" ],
       cwd     => "${dist_root}/${solr_name}",
       command =>  "install_solr_service.sh ${dist_root}/${dl_name} -d ${::solr::params::data_dir}",
-      onlyif  =>  "test ! -d /opt/${solr_name} && test -d ${dist_root}/${solr_name}",
+      creates =>  "/opt/${solr_name}",
       require =>  Exec['extract-solr'],
     }
 
