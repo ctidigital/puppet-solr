@@ -216,6 +216,7 @@ class solr::config(
       command =>  "wget ${download_url}",
       cwd     =>  $dist_root,
       unless  => "test -d /opt/${solr_name}",
+      creates => "${dist_root}/${dl_name}",
       timeout =>  0,
     }
 
@@ -223,7 +224,6 @@ class solr::config(
       path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
       command =>  "tar xvf ${dl_name}",
       cwd     =>  $dist_root,
-      creates => "${dist_root}/${dl_name}",
       unless  =>  "test -d /opt/${solr_name}",
       require =>  Exec['solr-download'],
     }
