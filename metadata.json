@@ -1,18 +1,18 @@
 {
-  "name": "vamsee-solr",
-  "version": "0.0.9-rc0",
-  "author": "vamsee",
+  "name": "ctidigital-solr",
+  "version": "1.0",
+  "author": "ctidigital",
   "summary": "A puppet module for solr",
   "license": "MIT",
-  "source": "git@github.com:vamsee/puppet-solr.git",
-  "project_page": "https://github.com/vamsee/puppet-solr",
-  "issues_url": "https://github.com/vamsee/puppet-solr/issues",
+  "source": "git@github.com:ctidigital/puppet-solr.git",
+  "project_page": "https://github.com/ctidigital/puppet-solr",
+  "issues_url": "https://github.com/ctidigital/puppet-solr/issues",
   "description": "Configure and set up a multi-core solr instance",
   "tags": ["solr", "apache"],
   "operatingsystem_support": [
     {
     "operatingsystem": "Ubuntu",
-    "operatingsystemrelease": [ "12.04", "14.04", "16.04" ]
+    "operatingsystemrelease": [ "14.04", "16.04", "18.04" ]
     }
   ],
   "dependencies": [
