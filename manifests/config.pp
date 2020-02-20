@@ -47,7 +47,7 @@ class solr::config(
         name       => 'solr',
         comment    => 'Solr Service',
         groups     => $web_group,
-        home       => $solr_name,
+        home       => $solr_home,
         managehome => false,
         shell      => '/bin/false',
       }
